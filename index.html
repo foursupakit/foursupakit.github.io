@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>What weekday is today</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        .vh-100 {
+            height: 100vh;
+        }
+
+        .gradient-custom {
+            background: #ffe259;
+            background: -webkit-linear-gradient(to right, rgba(255, 226, 89, 1), rgba(255, 167, 81, 1));
+            background: linear-gradient(to right, rgba(255, 226, 89, 1), rgba(255, 167, 81, 1))
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+        
+        .select2-container .select2-selection--single {
+            border: 1px solid #ced4da;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__arrow , .select2-container .select2-selection--single {
+            height: 47.6px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            font-size: 1.25rem;
+            line-height: 47.6px;
+        }
+    </style>
+</head>
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-md-8 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 1rem;">
+                    <div class="row">
+                        <div class="col-12 d-flex align-items-center">
+                            <div class="card-body p-4 p-lg-5 text-black">   
+                                <form onsubmit="handleSubmit();return false;" onreset="handleReset()">     
+                                    <div class="d-flex align-items-center mb-3 pb-1">
+                                        <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                                        <span class="h1 fw-bold mb-0">What weekday is today</span>
+                                    </div>
+                    
+                                    <div class="row">
+                                        <div class="col-12 col-md-3">
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="formrow-date-input">Date</label>
+                                                <input type="number" name="date" id="formrow-date-input" class="form-control form-control-lg" min="1" max="31" /> 
+                                                <label id="validate_date" class="text-danger" style="display: none"></label>                                        
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-5">
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label">Month</label>
+                                                <select class="form-control form-control-lg select-month" id="selectMonth" name="month" disabled></select>                                       
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label" for="form2Example17">Year</label>
+                                                <select class="form-control form-control-lg select-year" id="selectYear" name="year" disabled></select>   
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12" id="row_result" style="display: none">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Result :</label>
+                                                <div class="col-sm-9">
+                                                    <div id="result_value" class="form-control-plaintext"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+             
+                                    <div class="row pt-1 mb-3">
+                                        <div class="col-12 col-sm-6">
+                                            <button class="btn btn-primary btn-lg btn-block waves-effect waves-light mb-2" type="submit">Submit</button>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <button class="btn btn-secondary btn-lg btn-block waves-effect waves-light mb-2" type="reset">Reset</button>
+                                        </div>                                                                
+                                    </div>             
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        let month_now;
+        const dayList = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const dayBefore = ['', 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365]
+        const maxDayOfMonth = ['', 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        const monthList = ["January","February","March","April","May","June","July",
+            "August","September","October","November","December"];
+        const month30 = ["January","March","April","May","June","July",
+            "August","September","October","November","December"];
+        const monthShortName = ['', 'Jan', 'Feb', 'Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const years = 2023;
+        const selectMonth = document.getElementById("selectMonth");
+        const selectYear = document.getElementById("selectYear");
+        
+        $(document).ready(function() {
+            $('.select-month').select2();
+            $('.select-year').select2();
+
+            handleMonth(monthList);
+            handleYear();   
+        });
+
+        function handleMonth(value) {
+            selectMonth.options.length = 0
+            for(let i = 0; i < value.length; i++) {
+                let option;
+                let opt = value[i]; 
+                option = new Option(opt, i, false, false);
+                $('#selectMonth').append(option).trigger('change'); 
+            }
+        }
+
+        function handleYear() {
+            selectYear.options.length = 0
+            for(let i = 1900; i <= years; i++) {
+                let option;
+                let opt = i; 
+                if (i == years) {
+                    option = new Option(opt, opt, true, true);
+                } else {
+                    option = new Option(opt, opt, false, false);
+                }
+                $('#selectYear').append(option).trigger('change');          
+            }
+        }
+
+        $("#formrow-date-input").change(function() {
+            let date = parseInt($("#formrow-date-input").val());
+            let month = document.getElementById("selectMonth").value;
+            month_now = month
+            if (date) {
+                $("#selectMonth").prop( "disabled", false );
+                $("#selectYear").prop( "disabled", false );
+                selectMonth.options.length = 0
+
+                if (date > 0 && date == 30) {
+                    handleMonth(month30);
+                } else {
+                    handleMonth(monthList);
+                    document.getElementById("selectMonth").value = month_now;
+                }
+            }
+        });
+
+        // submit
+        function handleSubmit() {
+            let date = document.getElementById("formrow-date-input").value;
+            let month = document.getElementById("selectMonth").value;
+            let year = document.getElementById("selectYear").value;
+
+            if (!date) {
+                document.getElementById("validate_date").innerHTML = "Please fill in this field.";
+                document.getElementById("validate_date").style.display = "block";
+                return
+            } 
+
+            let extra_day = 0;
+            const is_leap_year = checkLeapYear(year);
+            if (is_leap_year) {
+                extra_day = 1;
+            }
+
+            if (date && date < 1 || date > (maxDayOfMonth[getMonthIndex(month)] + extra_day)) {
+                document.getElementById("validate_date").innerHTML = "Value must be less than or equal to "+(maxDayOfMonth[getMonthIndex(month)]+extra_day)+".";
+                document.getElementById("validate_date").style.display = "block";
+                document.getElementById("row_result").style.display = "none";
+                return
+            }
+
+            let day_name = getDayName(date, getMonthIndex(month), year);
+            document.getElementById("result_value").innerHTML = monthShortName[getMonthIndex(month)]+' '+date+', '+year+' is '+day_name;
+            document.getElementById("validate_date").style.display = "none";
+            document.getElementById("row_result").style.display = "block";
+        }
+
+        function getDayName(day, month, year) {
+            // เช็คปีที่เลือกว่าเป็น leap year 
+            let is_leap_year = checkLeapYear(year);
+             // เช็ค leap year ทั้งหมดก่อนปีที่เลือกลงไป
+            let amount_leap_year = getAmountLeapYear(year);
+
+            // จำนวนวันทั้งหมด + จำนวนวัน leap year ก่อนปีที่เลือก
+            let total_days = parseInt((year*365)) + parseInt(amount_leap_year);
+   
+            // วันทั้งหมดก่อนหน้า + leap year ในปีที่เลือก
+            let sum_days = 0
+            sum_days = parseInt(dayBefore[month]) + parseInt(day) + parseInt(total_days)
+            if (is_leap_year) {
+                if (month > 2) {
+                    sum_days += 1;
+                }
+            }
+
+            // เช็คชื่อวัน
+            let index_day = sum_days % 7;
+            let day_name = ''
+            if (index_day == 0) {
+                day_name = dayList[dayList.length - 1]
+            } else {
+                day_name = dayList[index_day - 1];
+            }
+
+            return day_name;
+        }
+
+        // check index of month
+        function getMonthIndex(val) {
+            switch (val) {
+            case "January":
+                return 1;
+            case "February":
+                return 2;
+            case "March":
+                return 3;
+            case "April":
+                return 4;
+            case "May":
+                return 5;
+            case "June":
+                return 6;
+            case "July":
+                return 7;
+            case "August":
+                return 8;
+            case "September":
+                return 9;
+            case "October":
+                return 10;
+            case "November":
+                return 11;
+            case "December":
+                return 12;
+            }
+        }
+        
+        // check leap year
+        function checkLeapYear(year){
+            return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+        }
+
+        // check all of leap year before
+        function getAmountLeapYear(years){
+            let amount = 0;
+            for (let year = 0; year < years; year++) {
+                let is_leap_year = checkLeapYear(year);
+                if (is_leap_year) {
+                    amount += 1;
+                }
+            }
+            return amount;
+        }
+
+        // reset form
+        function handleReset() {
+            $('#formrow-date-input').val(null);
+            handleMonth(monthList);
+            handleYear();  
+            document.getElementById("row_result").style.display = "none";
+            document.getElementById("validate_date").style.display = "none";
+            $("#selectMonth").prop( "disabled", true );
+            $("#selectYear").prop( "disabled", true );
+        }
+    </script>
+</body>
+</html>
