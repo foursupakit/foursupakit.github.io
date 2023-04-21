@@ -14,9 +14,8 @@
         }
 
         .gradient-custom {
-            background: #ffe259;
-            background: -webkit-linear-gradient(to right, rgba(255, 226, 89, 1), rgba(255, 167, 81, 1));
-            background: linear-gradient(to right, rgba(255, 226, 89, 1), rgba(255, 167, 81, 1))
+            background: #757F9A;
+            background: radial-gradient(circle, #757F9A 0%, #D7DDE8 100%);
         }
 
         .select2-container {
@@ -38,7 +37,7 @@
     </style>
 </head>
 <body>
-    <section class="vh-100 gradient-custom">
+    <section class="vh-100 gradient-custom" id="bg-gradient">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-md-8 col-lg-7 col-xl-6">
@@ -132,7 +131,7 @@
             for(let i = 0; i < value.length; i++) {
                 let option;
                 let opt = value[i]; 
-                option = new Option(opt, i, false, false);
+                option = new Option(opt, i+1, false, false);
                 $('#selectMonth').append(option).trigger('change'); 
             }
         }
@@ -187,17 +186,18 @@
                 extra_day = 1;
             }
 
-            if (date && date < 1 || date > (maxDayOfMonth[getMonthIndex(month)] + extra_day)) {
-                document.getElementById("validate_date").innerHTML = "Value must be less than or equal to "+(maxDayOfMonth[getMonthIndex(month)]+extra_day)+".";
+            if (date && date < 1 || date > (maxDayOfMonth[month] + extra_day)) {
+                document.getElementById("validate_date").innerHTML = "Value must be less than or equal to "+(maxDayOfMonth[month]+extra_day)+".";
                 document.getElementById("validate_date").style.display = "block";
                 document.getElementById("row_result").style.display = "none";
                 return
             }
 
-            let day_name = getDayName(date, getMonthIndex(month), year);
-            document.getElementById("result_value").innerHTML = monthShortName[getMonthIndex(month)]+' '+date+', '+year+' is '+day_name;
+            let day_name = getDayName(date, month, year);
+            document.getElementById("result_value").innerHTML = monthShortName[month]+' '+date+', '+year+' is '+day_name;
             document.getElementById("validate_date").style.display = "none";
             document.getElementById("row_result").style.display = "block";
+            setBackground(day_name)
         }
 
         function getDayName(day, month, year) {
@@ -231,34 +231,34 @@
         }
 
         // check index of month
-        function getMonthIndex(val) {
-            switch (val) {
-            case "January":
-                return 1;
-            case "February":
-                return 2;
-            case "March":
-                return 3;
-            case "April":
-                return 4;
-            case "May":
-                return 5;
-            case "June":
-                return 6;
-            case "July":
-                return 7;
-            case "August":
-                return 8;
-            case "September":
-                return 9;
-            case "October":
-                return 10;
-            case "November":
-                return 11;
-            case "December":
-                return 12;
-            }
-        }
+        // function getMonthIndex(val) {
+        //     switch (val) {
+        //     case "January":
+        //         return 1;
+        //     case "February":
+        //         return 2;
+        //     case "March":
+        //         return 3;
+        //     case "April":
+        //         return 4;
+        //     case "May":
+        //         return 5;
+        //     case "June":
+        //         return 6;
+        //     case "July":
+        //         return 7;
+        //     case "August":
+        //         return 8;
+        //     case "September":
+        //         return 9;
+        //     case "October":
+        //         return 10;
+        //     case "November":
+        //         return 11;
+        //     case "December":
+        //         return 12;
+        //     }
+        // }
         
         // check leap year
         function checkLeapYear(year){
@@ -286,6 +286,26 @@
             document.getElementById("validate_date").style.display = "none";
             $("#selectMonth").prop( "disabled", true );
             $("#selectYear").prop( "disabled", true );
+            document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #757F9A 0%, #D7DDE8 100%)";
+        }
+
+        function setBackground(day) {
+            switch (day) {
+            case "Monday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #FF8008 0%, #FFC837 100%)";
+            case "Tuesday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #BB377D  0%,#FBD3E9 100%)";
+            case "Wednesday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #7B920A 0%, #ADD100 100%)";
+            case "Thursday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #e43a15 0%, #e65245 100%)";
+            case "Friday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #00d2ff 0%, #3a7bd5 100%)";
+            case "Saturday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #9D50BB 0%, #6E48AA 100%)";       
+            case "Sunday":
+                return document.getElementById('bg-gradient').style.background = "radial-gradient(circle, #D31027 0%, #EA384D 100%)";
+            }
         }
     </script>
 </body>
